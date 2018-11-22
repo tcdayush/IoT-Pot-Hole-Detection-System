@@ -1,0 +1,70 @@
+**This Thingsboard-Setup documentation is assuming that you already have CURL in your running windows machine**
+
+**This setup guide is for WINDOWS 8/8.1/10 only**
+
+1. Download thingsboard from here : https://github.com/thingsboard/thingsboard/releases/download/v2.1/thingsboard-windows-2.1.zip
+
+2. Copy this zip folder in C: drive (make no subfolder)
+
+3. Extract the zipfolder under C: drive. So path of your thingsboard directory MUST be "C:\thingsboard"
+
+4. Visit java.org and update your java version to latest (even if you have done it already previously, tihngsboard reads change logs so you must upgrade it before installing thingsboard)
+
+5. Make sure you set path to both JDK and JRE in the environment variables.
+
+6. Now open CMD as admin.
+
+7. Go to your working thingsboard directory (C:\thingsboard)
+
+8. Type install.bat
+
+9. You will get a message :  thingsboard installed successfully
+
+10. Then type: net start thingsboard
+
+11. You should get the output : thingsboard service has been started.
+
+***Don't Close CMD yet***
+
+The thingsboard setup is successfully done by this step.
+
+
+12. Now open thingsboard locally on : http://localhost:8080/ (credentials --> username: sysadmin@thingsboard.org pass: sysadmin or visit thingsboard.io and start the LIVE DEMO version 
+
+13. Now when logged in, click "Assets" on left pannel.
+
+14. Click "+" on bottom right corner and create an assets. Give name : Car 1 and type : car
+
+15. Now click "Devices" on left pannel and create a device and name it "Sensor 1"
+
+16. Go back to "Assets" and find your creted asset and click on it.
+
+17. A new pannel will open on right side. See for "Relations" tab. Click it.
+
+18. Under relations. click "+" to create a new relation.
+
+19. Set relation type to "Contains"
+
+20. Set "To Entity" to "device"
+
+21. When prompt which device select "Sensor 1"
+
+22. Click ADD
+
+23. Now your Asset and Device has been linked.
+
+24. Now open CMD and type the following command:
+
+curl -v -X POST -d "{\"$variable_name$\":$value$}" http://demo.thingsboard.io/api/v1/$$ACCESS TOKEN$$/telemetry --header "Content-Type:application/json"
+
+25. In above command replace the ACCESS TOKEN with your device Access Token. Go to tingsboard pannel which is running. Open Device section. Find your device and simply click it.
+
+26. A new pannel will apppear on right. Click "Details" tab. There you will find "COPY ACCESS TOKEN". Click it and paste Access Token in above CMD command.
+
+27. Replace Variable Name with your desired variable name and value with your desired value.
+
+28. Go to thingsboard pannel. Click on your device and in right hand panel click "Latest Telemetry". You will find your variable and its value there.
+
+29. Run above command any number of time and you will see it changed dynamically.
+
+***Happy Coding***
