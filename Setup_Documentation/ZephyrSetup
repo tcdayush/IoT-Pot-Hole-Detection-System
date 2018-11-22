@@ -1,0 +1,122 @@
+########################################################
+##  Version		             Date 		      Name	      ##	
+##  Initial Draft       22-10-2018	     Ayush	      ##
+##						                                        ##
+########################################################
+
+
+1) create a new directory specific for the subject cs7ns2
+
+RUN:
+	a) `mkdir cs7ns2`
+
+2) GNU Arm Embedded :
+LINK:
+	https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+
+RUN:
+	a) `tar -xvf <downloaded file>` [extract in directory cs7ns2]
+
+
+3) Segger JLink :
+LINK:
+	https://www.segger.com/downloads/jlink
+
+PATH:
+	J-Link Software and Documentation Pack --> Click for downloads  --> download the Linux 64 bit file 
+
+RUN:
+	a) `sudo dpkg -i <downloaded file>` [run in directory cs7ns2]
+
+NOTES:
+	This should be installed in /usr/bin location in Linux
+	If you are using any other OS, make sure the location where it is installed is added to the $PATH
+
+
+4) nRF5x Command Line Tools[In directory cs7ns2]: 
+
+LINK:
+	https://www.nordicsemi.com/eng/nordic/Products/nRF52840/nRF5x-Command-Line-Tools-Linux64/58852
+
+RUN:
+	
+	a) `mkdir NordicSemi`
+	b) `cd NordicSemi`
+	c) `mkdir nRF5x-Command-Line-Tools`
+
+	d) `cd ..`
+	e) `tar -xvf <dowloaded file> -C ./NordicSemi/nRF5x-Command-Line-Tools`
+
+Two directories will appear where ever you are extracting the downloaded file
+ 1) mergehex
+ 2) nrfjprog
+
+each directory shall contain execultable of the same name 
+either include the path of the executable in $PATH or 
+follow the below steps
+
+	f) `cd ~`
+	g) `mkdir bin  [ALWAYS INCLUDED in $PATH so no need to explitly add the path when you restart the terminal]`
+
+create softlinks for the 2 files you got in the newly created bin
+	h) `ln -s <PATH OF THE EXECUTABLE>`
+
+
+check if command line was finally installed by running 
+	i) `nrfjprog -- version`
+
+	g) `nrfjprog --eraseall`
+EXPECTED:
+	Erasing user available code and UICR flash areas.
+	Applying system reset.
+
+4) clone the OS Zephyr in the directory cs7ns2
+
+
+	INSTALL THE DEPENDENCIES:
+	
+ 	a) `sudo apt-get install --no-install-recommends git cmake ninja-build gperf ccache doxygen dfu-util device-tree-compiler python3-ply python3-pip python3-setuptools python3-wheel xz-utils file make gcc-multilib autoconf automake libtool`
+	b) `$ cd ~/cs7ns2/zephyr # or wherever you have installed zephyr`
+	c) `$ pip3 install --user -r scripts/requirements.txt`
+	d) `export GNUARMEMB_TOOLCHAIN_PATH=<PATH WHERE YOU INSTALLED JLINK>`
+	e) `export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb`
+	f) `export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb`
+	g) `cd cd ~/cs7ns2/zephyr`
+	h) `export ZEPHYR_BASE=<PATH WHERE YOU CLONNED ZEPHYR>`
+	i) `source zephyr-env.sh`
+	j) `cd ~/cs7ns2/zephyr/samples/basic/blinky`
+	k) `mkdir build && cd build`
+	l) `cmake -GNinja -DBOARD=nrf52_pca10040 ..`
+	m) `ninja`
+
+
+EXPECTED:
+	[126/131] Linking C executable zephyr/zephyr_prebuilt.elf
+	Memory region         Used Size  Region Size  %age Used
+        	   FLASH:       43024 B       512 KB      8.21%
+        	    SRAM:       11084 B        64 KB     16.91%
+	        IDT_LIST:         120 B         2 KB      5.86%
+	[131/131] Linking C executable zephyr/zephyr.elf
+
+
+CONNECT BOARD: 
+
+
+	n) `ninja flash`
+
+EXPECTED:
+	[0/1] Flashing nrf52_pca10040
+	Using runner: nrfjprog
+	Flashing file: /Users/jdukes/Developer/zephyr-cs7ns2-1819/samples/basic/blinky/build/zephyr/zephyr.hex
+	Parsing hex file.
+	Erasing page at address 0x0.
+	Erasing page at address 0x1000.
+	Erasing page at address 0x2000.
+	[...]
+	Erasing page at address 0xA000.
+	Applying system reset.
+	Checking that the area to write is not protected.
+	Programming device.
+	Enabling pin reset.
+	Applying pin reset.
+	Board with serial number 682145371 flashed successfully.
